@@ -56,9 +56,10 @@ most checks, but a server is preferred.
 
 1. The `origin` remote points to `git@github.com:Abdelhafidh-87/Portfolio.git`. Add your SSH
    key to GitHub, then push `main` (or use an HTTPS remote with a credential helper).
-2. Open **Settings → Pages → Build and deployment**.
-3. Set **Source** to **GitHub Actions**.
-4. Push to `main` or run the workflow manually from the **Actions** tab.
+2. Push `main`. The workflow asks `actions/configure-pages` to create the Pages site
+   automatically using its `pages: write` token.
+3. If **Configure Pages** is denied, open **Settings → Pages → Build and deployment** and set
+   **Source** to **GitHub Actions**, then re-run the workflow.
 
 The workflow deploys the repository root as a static artifact to
 `https://abdelhafidh-87.github.io/Portfolio/`. All local asset paths are relative so the

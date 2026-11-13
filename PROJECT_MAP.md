@@ -37,12 +37,13 @@ Success criteria:
 | M2 — visual system | Complete | Light minimal theme, design tokens, responsive cards, and typography. |
 | M3 — responsive and accessible layout | Complete | Tested from 320 px to 1920 px; axe reports zero WCAG A/AA violations. |
 | M4 — progressive JavaScript | Complete | Mobile navigation, active-section highlighting, and footer year enhancement. |
-| M5 — deployment | Remote configured; deployment pending | `origin` is set; this machine's SSH key is not authorized, and Pages is not configured yet. |
+| M5 — deployment | Pushed; Pages enablement pending | `main` is pushed. Run 1 failed at Configure Pages because Pages was disabled; the workflow now attempts enablement. |
 | M6 — launch content and audit | Pending | Needs final copy, résumé PDF, contact/social URLs, and a production audit. |
 
-Current Git state: branch `main`, initial commit `915076c`, `origin` set to
-`git@github.com:Abdelhafidh-87/Portfolio.git`. HTTPS read access succeeds; SSH push currently
-fails with `Permission denied (publickey)`. The remote repository was empty when checked.
+Current Git state: branch `main` tracks `origin/main` at `0e0bede`; `origin` is
+`git@github.com:Abdelhafidh-87/Portfolio.git`. The SSH push succeeded after unlocking the local
+key. Workflow run 1 failed at **Configure Pages** because no Pages site existed. The workflow now
+passes `enablement: true` so it can try to create the Pages site with its token.
 
 ## 4. Architecture
 
@@ -220,20 +221,23 @@ Workflow: `.github/workflows/deploy.yml`
 - Triggers on push to `main` and manual `workflow_dispatch`.
 - Permissions: `contents: read`, `pages: write`, `id-token: write`.
 - Concurrency group: `pages`; in-progress deployments are not cancelled.
-- Steps: checkout, validate required files and relative paths, configure Pages, upload the
-  repository root, deploy.
+- Steps: checkout, validate required files and relative paths, configure Pages (with an
+  enablement attempt), upload the repository root, deploy.
 - Pinned major versions: `actions/checkout@v7`, `actions/configure-pages@v6`,
   `actions/upload-pages-artifact@v5`, `actions/deploy-pages@v5`.
 - No secrets are required; the workflow uses the automatic `GITHUB_TOKEN`.
 
 First deployment:
 
-1. Authorize this machine's SSH key on GitHub, or switch `origin` to HTTPS with a credential
-   helper. The current SSH key is rejected with `Permission denied (publickey)`.
-2. Push `main`.
-3. In **Settings → Pages → Build and deployment**, set **Source** to **GitHub Actions**.
-4. Push to `main` or run the workflow from the **Actions** tab.
-5. Verify canonical, `og:url`, and JSON-LD `url` against the deployed URL.
+1. Push `main` (done at `0e0bede`).
+2. Let the workflow run **Configure Pages** with `enablement: true`. If site creation is denied,
+   open **Settings → Pages → Build and deployment**, set **Source** to **GitHub Actions**, and
+   re-run the workflow.
+3. Verify canonical, `og:url`, and JSON-LD `url` against the deployed URL.
+
+The action documentation says automatic enablement requires a token other than
+`GITHUB_TOKEN`. The workflow is testing whether its `pages: write` permission is sufficient;
+if not, use a PAT with Pages/administration write access or enable Pages manually.
 
 Rollback:
 
@@ -263,13 +267,15 @@ Rollback:
 - [ ] Add `assets/resume.pdf` and enable both résumé links.
 - [ ] Replace project repository/demo URLs and the LinkedIn placeholder; confirm the GitHub URL.
 - [ ] Verify canonical, Open Graph, JSON-LD, and social URLs against the production deployment.
-- [ ] Authorize SSH or use HTTPS credentials, push `main`, set Pages to GitHub Actions, and
-      deploy.
+- [x] Push `main` (`0e0bede`) after unlocking the local SSH key.
+- [ ] Enable Pages through the workflow's `enablement: true` attempt, or set the source to
+      GitHub Actions manually, then verify the deployment.
 - [ ] Re-run W3C, Lighthouse, axe, keyboard, no-JS, and responsive checks against production.
 - [ ] Optionally add a 1200×630 Open Graph image and reference it in metadata.
 - [ ] Review the design in a real browser with final copy; placeholder lengths may change
       wrapping and card balance.
-- [x] Commit the initial implementation (`915076c`); keep future changes on `main` deployable.
+- [x] Commit the initial implementation (`915076c`) and temporary content (`0e0bede`); keep
+      future changes on `main` deployable.
 
 ## 14. Change protocol
 
