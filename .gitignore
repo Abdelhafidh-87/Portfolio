@@ -6,3 +6,5 @@ Thumbs.db
 node_modules/
 .env
 .env.*
+PROJECT_MAP.md
+README.md
