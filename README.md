@@ -7,11 +7,11 @@ dependency.
 ## Status
 
 - **M0–M4:** implementation complete.
-- **M5:** deployment workflow is implemented; GitHub repository, Pages settings, and first
-  deployment are pending.
-- **M6:** real content, resume PDF, final URLs, and launch audit are pending.
+- **M5:** deployment workflow is implemented and the GitHub remote is configured; Pages
+  settings and the first deployment are pending.
+- **M6:** real content, resume PDF, final social URLs, and launch audit are pending.
 
-All temporary copy is marked with bracketed placeholders or `TODO(content)` comments.
+Temporary copy uses lorem ipsum and `TODO(launch)` comments.
 
 ## Local preview
 
@@ -43,7 +43,7 @@ most checks, but a server is preferred.
 ## Updating content
 
 1. Edit `index.html`.
-2. Search for `TODO(` and `[` and replace every placeholder.
+2. Search for `TODO(launch)` and replace every temporary item.
 3. Add `assets/resume.pdf`, then uncomment the two resume links in the header and hero.
 4. Update the canonical URL, Open Graph URL, JSON-LD URL, email address, GitHub profile,
    LinkedIn profile, and project links.
@@ -54,17 +54,19 @@ most checks, but a server is preferred.
 
 ### One-time setup
 
-1. Create a GitHub repository and push this project to `main`.
+1. The `origin` remote points to `git@github.com:Abdelhafidh-87/Portfolio.git`. Add your SSH
+   key to GitHub, then push `main` (or use an HTTPS remote with a credential helper).
 2. Open **Settings → Pages → Build and deployment**.
 3. Set **Source** to **GitHub Actions**.
 4. Push to `main` or run the workflow manually from the **Actions** tab.
 
 The workflow deploys the repository root as a static artifact to
-`https://<username>.github.io/<repository>/`. All local asset paths are relative so the
+`https://abdelhafidh-87.github.io/Portfolio/`. All local asset paths are relative so the
 project-site subpath works correctly.
 
-The canonical URL, `og:url`, and JSON-LD `url` must be changed from the placeholder
-`https://your-username.github.io/portfolio/` to the real deployment URL before launch.
+The canonical URL, `og:url`, and JSON-LD `url` are set to
+`https://abdelhafidh-87.github.io/Portfolio/`. Verify the deployed URL and repository-name
+capitalization before launch.
 
 ### Rollback
 

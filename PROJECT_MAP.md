@@ -37,10 +37,12 @@ Success criteria:
 | M2 — visual system | Complete | Light minimal theme, design tokens, responsive cards, and typography. |
 | M3 — responsive and accessible layout | Complete | Tested from 320 px to 1920 px; axe reports zero WCAG A/AA violations. |
 | M4 — progressive JavaScript | Complete | Mobile navigation, active-section highlighting, and footer year enhancement. |
-| M5 — deployment | Workflow ready; deployment pending | Needs GitHub remote, Pages source set to GitHub Actions, and a first push. |
-| M6 — launch content and audit | Pending | Needs real copy, résumé PDF, contact/social URLs, canonical URLs, and final audit. |
+| M5 — deployment | Remote configured; deployment pending | `origin` is set; this machine's SSH key is not authorized, and Pages is not configured yet. |
+| M6 — launch content and audit | Pending | Needs final copy, résumé PDF, contact/social URLs, and a production audit. |
 
-Current Git state: branch `main`, repository initialized locally, no remote configured yet.
+Current Git state: branch `main`, initial commit `915076c`, `origin` set to
+`git@github.com:Abdelhafidh-87/Portfolio.git`. HTTPS read access succeeds; SSH push currently
+fails with `Permission denied (publickey)`. The remote repository was empty when checked.
 
 ## 4. Architecture
 
@@ -91,23 +93,26 @@ the menu toggle, and exposes all content.
 └── README.md                   # Setup, content, deployment, and validation guide
 ```
 
-## 6. Content that must be replaced
+## 6. Temporary content to replace
 
-Search `index.html` for `TODO(` and `[` before launch.
+Search `index.html` for `TODO(launch)` before launch.
 
-- Identity: `[Your Name]`, `[Location]`, `[City, Country]`, `[Front-end engineering]`.
-- Availability and contact: `[open to new opportunities]`, `you@example.com`.
-- About: two placeholder bio paragraphs.
-- Experience: three timeline entries with placeholder roles, dates, organizations, and bullets.
+- Identity: `Alex Morgan`, `Berlin, Germany`, `Front-end engineering`.
+- Availability and contact: `Open to opportunities`, `hello@example.com`.
+- About: two lorem ipsum biography paragraphs.
+- Experience: Northwind Labs, Contoso Studio, Example University, and lorem ipsum bullets.
 - Skills: sample language, framework, tool, and practice lists.
-- Projects: three cards with placeholder titles, summaries, tags, repository links, and demos.
-- Social: `https://github.com/your-username` and `https://www.linkedin.com/in/your-profile`.
-- SEO: canonical, `og:url`, JSON-LD `url`, JSON-LD `sameAs`, and page title/description.
+- Projects: Project Atlas, Project Relay, and Project Lumen with lorem ipsum summaries.
+- Project links: repository links point to this repository; demo links point to
+  `https://example.com`.
+- Social: GitHub uses `https://github.com/Abdelhafidh-87`; LinkedIn is the placeholder
+  `https://www.linkedin.com/in/example`.
+- SEO: canonical, `og:url`, JSON-LD `url`, and page title/description use the temporary identity
+  and the expected Pages URL. Verify the deployed URL and repository-name capitalization.
 - Résumé: add `assets/resume.pdf`, then uncomment the header and hero links.
-- Footer: `[Your Name]` and the copyright year (the year is updated by JavaScript when enabled).
+- Footer: `Alex Morgan`; the copyright year is updated by JavaScript when enabled.
 
-The project-demo URLs currently point to `https://example.com`; replace them with real case
-studies or remove the demo links.
+All temporary sections are marked with `TODO(launch)` comments.
 
 ## 7. Design system
 
@@ -188,7 +193,7 @@ Validated on 2026-11-13 against the local server.
 - JS syntax: passed (`node --check`).
 - W3C Nu HTML Checker: 0 errors, 0 warnings, 10 informational notes about `role="list"`.
 - Lighthouse 13.6.0 mobile: Performance 100, Accessibility 100, Best Practices 100, SEO 100.
-  FCP 1.0 s, LCP 1.0 s, CLS 0.023, TBT 10 ms.
+  FCP 1.0 s, LCP 1.0 s, CLS 0.023, TBT 30 ms.
 - Playwright with Brave (`/usr/bin/brave-browser`):
   - HTTP 200, one `h1`, expected title, no console/page errors.
   - axe: zero WCAG A/AA violations.
@@ -223,11 +228,12 @@ Workflow: `.github/workflows/deploy.yml`
 
 First deployment:
 
-1. Create a GitHub repository and add it as `origin`.
+1. Authorize this machine's SSH key on GitHub, or switch `origin` to HTTPS with a credential
+   helper. The current SSH key is rejected with `Permission denied (publickey)`.
 2. Push `main`.
 3. In **Settings → Pages → Build and deployment**, set **Source** to **GitHub Actions**.
 4. Push to `main` or run the workflow from the **Actions** tab.
-5. Replace canonical, `og:url`, and JSON-LD `url` placeholders with the deployed URL.
+5. Verify canonical, `og:url`, and JSON-LD `url` against the deployed URL.
 
 Rollback:
 
@@ -240,7 +246,10 @@ Rollback:
 - Single page: matches portfolio browsing behavior and avoids routing complexity.
 - System fonts: removes network requests, font loading shift, and privacy concerns.
 - Inline SVG favicon: crisp at any size and no extra request.
-- Placeholder-first content: makes the structure reviewable before final copy is available.
+- Temporary Alex Morgan/lorem content: makes the layout reviewable before final copy is
+  available; every temporary section is marked `TODO(launch)`.
+- SSH `origin` with HTTPS fallback: the repository is public and readable over HTTPS, while
+  pushing currently requires an authorized SSH key or HTTPS credentials.
 - Résumé links commented out: prevents a broken download until `assets/resume.pdf` exists.
 - Relative asset paths: required for GitHub Pages project-site subpaths.
 - GitHub Actions Pages deployment: avoids maintaining a `gh-pages` branch.
@@ -249,16 +258,18 @@ Rollback:
 
 ## 13. Open items
 
-- [ ] Add real identity, bio, experience, skills, projects, email, GitHub, and LinkedIn data.
+- [ ] Replace Alex Morgan and all lorem ipsum with real identity, bio, experience, skills, and
+      project content.
 - [ ] Add `assets/resume.pdf` and enable both résumé links.
-- [ ] Replace all project URLs and remove demo links that have no real destination.
-- [ ] Replace canonical, Open Graph, JSON-LD, and social URLs.
-- [ ] Create the GitHub repository, add the remote, set Pages to GitHub Actions, and deploy.
+- [ ] Replace project repository/demo URLs and the LinkedIn placeholder; confirm the GitHub URL.
+- [ ] Verify canonical, Open Graph, JSON-LD, and social URLs against the production deployment.
+- [ ] Authorize SSH or use HTTPS credentials, push `main`, set Pages to GitHub Actions, and
+      deploy.
 - [ ] Re-run W3C, Lighthouse, axe, keyboard, no-JS, and responsive checks against production.
 - [ ] Optionally add a 1200×630 Open Graph image and reference it in metadata.
 - [ ] Review the design in a real browser with final copy; placeholder lengths may change
       wrapping and card balance.
-- [ ] Commit the initial implementation and keep future changes on `main` deployable.
+- [x] Commit the initial implementation (`915076c`); keep future changes on `main` deployable.
 
 ## 14. Change protocol
 
