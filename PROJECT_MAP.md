@@ -1,7 +1,7 @@
 # Project Map
 
 Last updated: 2026-11-13
-Current status: M0–M4 complete; M5 and M6 pending.
+Current status: M0–M5 complete; M6 pending.
 
 This file is the external memory for the project. Keep it synchronized with the code and
 update it whenever structure, behavior, deployment, or launch status changes.
@@ -37,13 +37,13 @@ Success criteria:
 | M2 — visual system | Complete | Light minimal theme, design tokens, responsive cards, and typography. |
 | M3 — responsive and accessible layout | Complete | Tested from 320 px to 1920 px; axe reports zero WCAG A/AA violations. |
 | M4 — progressive JavaScript | Complete | Mobile navigation, active-section highlighting, and footer year enhancement. |
-| M5 — deployment | Pushed; Pages enablement pending | `main` is pushed. Run 1 failed at Configure Pages because Pages was disabled; the workflow now attempts enablement. |
-| M6 — launch content and audit | Pending | Needs final copy, résumé PDF, contact/social URLs, and a production audit. |
+| M5 — deployment | Complete | Workflow run 43476550695 created the Pages site and deployed successfully. Live at `https://abdelhafidh-87.github.io/Portfolio/`. |
+| M6 — launch content and audit | Pending | Needs final copy, résumé PDF, social URLs, and a final-content audit. |
 
-Current Git state: branch `main` tracks `origin/main` at `0e0bede`; `origin` is
+Current Git state: branch `main` tracks `origin/main`; `origin` is
 `git@github.com:Abdelhafidh-87/Portfolio.git`. The SSH push succeeded after unlocking the local
-key. Workflow run 1 failed at **Configure Pages** because no Pages site existed. The workflow now
-passes `enablement: true` so it can try to create the Pages site with its token.
+key. The first run failed at **Configure Pages** because no Pages site existed; adding
+`enablement: true` let the next run create it and deploy.
 
 ## 4. Architecture
 
@@ -189,7 +189,9 @@ npx --yes html-validate index.html
 
 ## 10. Validation record
 
-Validated on 2026-11-13 against the local server.
+Validated on 2026-11-13 against both the local server and the production deployment.
+
+Local checks:
 
 - JS syntax: passed (`node --check`).
 - W3C Nu HTML Checker: 0 errors, 0 warnings, 10 informational notes about `role="list"`.
@@ -206,13 +208,24 @@ Validated on 2026-11-13 against the local server.
   - No clipped headings; buttons are at least 44 px tall; reduced-motion scrolling is automatic.
   - No-JS page loads, nav remains visible, toggle is hidden, and main content is visible.
 
-Lighthouse still notes unminified CSS, render-blocking CSS, local-server document latency, and
-cache lifetimes. These are expected for a no-build static site; GitHub Pages controls caching,
-and the total CSS payload is small.
+Production checks:
+
+- `https://abdelhafidh-87.github.io/Portfolio/` returns HTTP 200 with the expected title,
+  canonical URL, and `h1`.
+- W3C Nu HTML Checker against the live URL: 0 errors, 0 warnings, same 10 informational notes.
+- The full Playwright/axe suite passed against production.
+- Lighthouse 13.6.0 mobile: Performance 99, Accessibility 100, Best Practices 100, SEO 100.
+  FCP 1.1 s, LCP 1.1 s, CLS 0.023, TBT 10 ms, warm TTFB 0.25–0.32 s.
+
+The first production Lighthouse run scored 93 Performance because the initial GitHub Pages
+response took 3.36 s; a warm run scored 99. Lighthouse still notes unminified CSS,
+render-blocking CSS, and cache lifetimes. These are expected for a no-build static site;
+GitHub Pages controls caching, and the total CSS payload is small.
 
 The Playwright/axe harness is intentionally external to the repository and was run from
-`/tmp/opencode/portfolio-test/test.js`; results were saved to
-`/tmp/opencode/playwright-results.txt`. Recreate the harness if it is no longer available.
+`/tmp/opencode/portfolio-test/test.js`. Results were saved to
+`/tmp/opencode/playwright-results.txt` and `/tmp/opencode/playwright-production.txt`.
+Recreate the harness if it is no longer available.
 
 ## 11. Deployment
 
@@ -227,17 +240,18 @@ Workflow: `.github/workflows/deploy.yml`
   `actions/upload-pages-artifact@v5`, `actions/deploy-pages@v5`.
 - No secrets are required; the workflow uses the automatic `GITHUB_TOKEN`.
 
-First deployment:
+Deployment record:
 
-1. Push `main` (done at `0e0bede`).
-2. Let the workflow run **Configure Pages** with `enablement: true`. If site creation is denied,
-   open **Settings → Pages → Build and deployment**, set **Source** to **GitHub Actions**, and
-   re-run the workflow.
-3. Verify canonical, `og:url`, and JSON-LD `url` against the deployed URL.
+1. Pushed `main` at `0e0bede`. Run 1 failed at **Configure Pages** because the repository had no
+   Pages site.
+2. Added `enablement: true` and pushed `b5ea859`. Run 43476550695 completed successfully:
+   Configure Pages, upload artifact, and deploy all passed.
+3. Verified the live URL, title, canonical URL, HTML validity, accessibility, and Lighthouse
+   scores.
 
 The action documentation says automatic enablement requires a token other than
-`GITHUB_TOKEN`. The workflow is testing whether its `pages: write` permission is sufficient;
-if not, use a PAT with Pages/administration write access or enable Pages manually.
+`GITHUB_TOKEN`; in this repository, the workflow's `pages: write` token succeeded. If a future
+run is denied, use a PAT with Pages/administration write access or enable Pages manually.
 
 Rollback:
 
@@ -252,11 +266,13 @@ Rollback:
 - Inline SVG favicon: crisp at any size and no extra request.
 - Temporary Alex Morgan/lorem content: makes the layout reviewable before final copy is
   available; every temporary section is marked `TODO(launch)`.
-- SSH `origin` with HTTPS fallback: the repository is public and readable over HTTPS, while
-  pushing currently requires an authorized SSH key or HTTPS credentials.
+- SSH `origin` with HTTPS fallback: the repository is public and readable over HTTPS; SSH push
+  works after unlocking the local key.
 - Résumé links commented out: prevents a broken download until `assets/resume.pdf` exists.
 - Relative asset paths: required for GitHub Pages project-site subpaths.
 - GitHub Actions Pages deployment: avoids maintaining a `gh-pages` branch.
+- Workflow-based Pages enablement: `enablement: true` created the Pages site on the second run
+  using the workflow token, so no manual Pages setup was required.
 - `role="list"` retained: improves Safari/VoiceOver semantics despite validator noise.
 - No OG image: avoids shipping a low-quality placeholder; add one during launch if desired.
 
@@ -266,11 +282,11 @@ Rollback:
       project content.
 - [ ] Add `assets/resume.pdf` and enable both résumé links.
 - [ ] Replace project repository/demo URLs and the LinkedIn placeholder; confirm the GitHub URL.
-- [ ] Verify canonical, Open Graph, JSON-LD, and social URLs against the production deployment.
-- [x] Push `main` (`0e0bede`) after unlocking the local SSH key.
-- [ ] Enable Pages through the workflow's `enablement: true` attempt, or set the source to
-      GitHub Actions manually, then verify the deployment.
-- [ ] Re-run W3C, Lighthouse, axe, keyboard, no-JS, and responsive checks against production.
+- [x] Verify canonical, Open Graph, JSON-LD, and social URLs against the production deployment.
+- [x] Push `main` after unlocking the local SSH key.
+- [x] Enable Pages through the workflow's `enablement: true` attempt and deploy at
+      `https://abdelhafidh-87.github.io/Portfolio/`.
+- [x] Re-run W3C, Lighthouse, axe, keyboard, no-JS, and responsive checks against production.
 - [ ] Optionally add a 1200×630 Open Graph image and reference it in metadata.
 - [ ] Review the design in a real browser with final copy; placeholder lengths may change
       wrapping and card balance.

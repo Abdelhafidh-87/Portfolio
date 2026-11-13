@@ -6,10 +6,9 @@ dependency.
 
 ## Status
 
-- **M0–M4:** implementation complete.
-- **M5:** deployment workflow is implemented and the GitHub remote is configured; Pages
-  settings and the first deployment are pending.
-- **M6:** real content, resume PDF, final social URLs, and launch audit are pending.
+- **Live site:** <https://abdelhafidh-87.github.io/Portfolio/>
+- **M0–M5:** implementation and deployment complete.
+- **M6:** real content, resume PDF, final social URLs, and a final-content audit are pending.
 
 Temporary copy uses lorem ipsum and `TODO(launch)` comments.
 
@@ -52,6 +51,9 @@ most checks, but a server is preferred.
 
 ## Deployment
 
+Live at <https://abdelhafidh-87.github.io/Portfolio/>. The first workflow run created the Pages
+site automatically through `enablement: true` and deployed successfully.
+
 ### One-time setup
 
 1. The `origin` remote points to `git@github.com:Abdelhafidh-87/Portfolio.git`. Add your SSH
@@ -80,13 +82,13 @@ least-privilege permissions (`contents: read`, `pages: write`, `id-token: write`
 
 ## Validation checklist
 
-- [ ] W3C Nu HTML Checker: zero errors.
-- [ ] Lighthouse mobile: Performance, Accessibility, Best Practices, SEO ≥ 95.
-- [ ] axe DevTools: zero serious/critical findings.
-- [ ] Keyboard-only: skip link, nav, menu, all links usable; focus visible.
-- [ ] JavaScript disabled: all content and navigation usable.
-- [ ] Responsive: no horizontal scroll at 320, 375, 768, 1024, 1440, 1920 px.
+- [x] W3C Nu HTML Checker: zero errors.
+- [x] Lighthouse mobile: Performance, Accessibility, Best Practices, SEO ≥ 95.
+- [x] axe DevTools: zero serious/critical findings.
+- [x] Keyboard-only: skip link, nav, menu, all links usable; focus visible.
+- [x] JavaScript disabled: all content and navigation usable.
+- [x] Responsive: no horizontal scroll at 320, 375, 768, 1024, 1440, 1920 px.
 - [ ] Resume link downloads a real PDF.
 - [ ] All external links open safely and return the expected pages.
-- [ ] Canonical/OG/JSON-LD URLs match production.
-- [ ] No `TODO(` or bracketed placeholders remain.
+- [x] Canonical/OG/JSON-LD URLs match production.
+- [ ] No `TODO(launch)` comments or temporary lorem content remain.
